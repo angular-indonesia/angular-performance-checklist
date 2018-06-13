@@ -161,8 +161,6 @@ The tooling here is not Angular-specific and entirely depends on the web/applica
 - deflate - a data compression algorithm and associated file format that uses a combination of the LZ77 algorithm and Huffman coding.
 - [brotli](https://github.com/google/brotli) - a generic-purpose lossless compression algorithm that compresses data using a combination of a modern variant of the LZ77 algorithm, Huffman coding and 2nd order context modeling, with a compression ratio comparable to the best currently available general-purpose compression methods. It is similar in speed with deflate but offers more dense compression.
 
-*Note:* Brotli is [not widely supported yet](http://caniuse.com/#search=brotli).
-
 **Resources**
 
 - ["Better than Gzip Compression with Brotli"](https://hacks.mozilla.org/2015/11/better-than-gzip-compression-with-brotli/)
@@ -213,7 +211,7 @@ The application shell is the minimum user interface that we show to the users in
 
 **Tooling**
 
-- [Angular Mobile Toolkit](https://github.com/angular/mobile-toolkit) - aims to automate the process of managing Service Workers. It also contains Service Worker for caching static assets, and one for [generating application shell](https://developers.google.com/web/updates/2015/11/app-shell?hl=en).
+- [Angular Service Worker](https://angular.io/guide/service-worker-intro) - aims to automate the process of managing Service Workers. It also contains Service Worker for caching static assets, and one for [generating application shell](https://developers.google.com/web/updates/2015/11/app-shell?hl=en).
 - [Angular Universal](https://github.com/angular/angular/tree/master/packages/platform-server) - Universal (isomorphic) JavaScript support for Angular.
 
 **Resources**
@@ -226,7 +224,7 @@ We can think of the Service Worker as an HTTP proxy which is located in the brow
 
 **Tooling**
 
-- [Angular Mobile Toolkit](https://github.com/angular/mobile-toolkit) - aims to automate the process of managing Service Workers. It also contains Service Worker for caching static assets, and one for [generating application shell](https://developers.google.com/web/updates/2015/11/app-shell?hl=en).
+- [Angular Service Worker](https://angular.io/guide/service-worker-intro) - aims to automate the process of managing Service Workers. It also contains Service Worker for caching static assets, and one for [generating application shell](https://developers.google.com/web/updates/2015/11/app-shell?hl=en).
 - [Offline Plugin for Webpack](https://github.com/NekR/offline-plugin) - Webpack plugin that adds support for Service Worker with a fall-back to AppCache.
 
 **Resources**
@@ -241,7 +239,7 @@ This section includes practices which can be applied in order to provide smoothe
 
 In development mode Angular performs some extra checks in order to verify that performing change detection does not result to any additional changes to any of the bindings. This way the frameworks assures that the unidirectional data flow has been followed.
 
-In order to disable these changes for production to not forget to invoke `enableProdMode`:
+In order to disable these changes for production do not forget to invoke `enableProdMode`:
 
 ```typescript
 import { enableProdMode } from '@angular/core';
@@ -449,4 +447,3 @@ In case you notice something missing, incomplete or incorrect, a pull request wi
 # License
 
 MIT
-
