@@ -46,6 +46,7 @@ Note that most practices are valid for both HTTP/1.1 and HTTP/2. Practices which
       - [Run outside Angular](#run-outside-angular)
     - [Use pure pipes](#use-pure-pipes)
     - [Use `trackBy` option for `*ngFor` directive](#use-trackby-option-for-ngfor-directive)
+    - [Optimize template expressions](#optimize-template-expressions)
 - [Conclusion](#conclusion)
 - [Contributing](#contributing)
 
@@ -72,6 +73,9 @@ Tools which allows us to bundle our applications efficiently are:
 - [Google Closure Compiler](https://github.com/google/closure-compiler) - performs plenty of optimizations and provides bundling support. Originally written in Java, since recently it also has a [JavaScript version](https://www.npmjs.com/package/google-closure-compiler-js) which can be [found here](https://www.npmjs.com/package/google-closure-compiler-js).
 - [SystemJS Builder](https://github.com/systemjs/builder) - provides a single-file build for SystemJS of mixed-dependency module trees.
 - [Browserify](http://browserify.org/).
+- [ngx-build-modern](https://github.com/manfredsteyer/ngx-build-plus/tree/master/ngx-build-modern) - plugin for Angular-CLI which builds the application bundle in two variants:
+  1. For modern browsers with ES2015 modules and specific polyfills resulting in a smaller bundle.
+  2. Additional legacy version using different polyfills and compiler target (as it is by default).
 
 **Resources**
 
@@ -141,10 +145,6 @@ This means that the unused export `bar` will not be included into the final bund
 ### Ahead-of-Time (AoT) Compilation
 
 A challenge for the available in the wild tools (such as GCC, Rollup, etc.) are the HTML-like templates of the Angular components, which cannot be analyzed with their capabilities. This makes their tree-shaking support less efficient because they're not sure which directives are referenced within the templates. The AoT compiler transpiles the Angular HTML-like templates to JavaScript or TypeScript with ES2015 module imports. This way we are able to efficiently tree-shake during bundling and remove all the unused directives defined by Angular, third-party libraries or by ourselves.
-
-**Tooling**
-
-- [@angular/compiler-cli](https://github.com/angular/angular/tree/master/modules/%40angular/compiler-cli) - a drop-in replacement for [tsc](https://www.npmjs.com/package/typescript) which statically analyzes our application and emits TypeScript/JavaScript for the component's templates.
 
 **Resources**
 
@@ -255,7 +255,6 @@ AoT can be helpful not only for achieving more efficient bundling by performing 
 
 **Tooling**
 
-- [@angular/compiler-cli](https://github.com/angular/angular/tree/master/modules/%40angular/compiler-cli) - a drop-in replacement for [tsc](https://www.npmjs.com/package/typescript) which statically analyzes our application and emits TypeScript/JavaScript for the component's templates.
 - [angular2-seed](https://github.com/mgechev/angular2-seed) - a starter project which includes support for AoT compilation.
 - [angular-cli](https://cli.angular.io) Using the `ng serve --prod`
 
@@ -308,6 +307,7 @@ The `OnPush` change detection strategy allows us to disable the change detection
 **Resources**
 
 - ["Change Detection in Angular"](https://vsavkin.com/change-detection-in-angular-2-4f216b855d4c)
+- ["Everything you need to know about change detection in Angular"](https://blog.angularindepth.com/everything-you-need-to-know-about-change-detection-in-angular-8006c51d206f)
 
 #### Detaching the Change Detector
 
@@ -435,6 +435,16 @@ export class YtFeedComponent {
 
 - ["NgFor directive"](https://angular.io/docs/ts/latest/api/common/index/NgFor-directive.html) - official documentation for `*ngFor`
 - ["Angular — Improve performance with trackBy"](https://netbasal.com/angular-2-improve-performance-with-trackby-cc147b5104e5) - shows gif demonstration of the approach
+
+### Optimize template expressions
+
+Angular executes template expressions after every change detection cycle. Change detection cycles are triggered by many asynchronous activities such as promise resolutions, http results, timer events, keypresses and mouse moves.
+
+Expressions should finish quickly or the user experience may drag, especially on slower devices. Consider caching values when their computation is expensive.
+
+**Resources**
+- [quick-execution](https://angular.io/guide/template-syntax#quick-execution) - official documentation for template expressions
+- [Increasing Performance - more than a pipe dream](https://youtu.be/I6ZvpdRM1eQ) - ng-conf video in youtube. Using pipe instead of function in interpolation expression
 
 # Conclusion
 
