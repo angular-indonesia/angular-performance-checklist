@@ -27,6 +27,7 @@ Note that most practices are valid for both HTTP/1.1 and HTTP/2. Practices which
     - [Minification and Dead code elimination](#minification-and-dead-code-elimination)
     - [Remove template whitespace](#remove-template-whitespace)
     - [Tree-shaking](#tree-shaking)
+    - [Tree-shakeable providers](#tree-shakeable-providers)
     - [Ahead-of-Time (AoT) Compilation](#ahead-of-time-aot-compilation)
     - [Compression](#compression)
     - [Pre-fetching Resources](#pre-fetching-resources)
@@ -143,6 +144,81 @@ This means that the unused export `bar` will not be included into the final bund
 - ["Building an Angular Application for Production"](http://blog.mgechev.com/2016/06/26/tree-shaking-angular2-production-build-rollup-javascript/)
 - ["2.5X Smaller Angular Applications with Google Closure Compiler"](http://blog.mgechev.com/2016/07/21/even-smaller-angular2-applications-closure-tree-shaking/)
 - ["Using pipeable operators in RxJS"](https://github.com/ReactiveX/rxjs/blob/master/doc/pipeable-operators.md)
+
+### Tree-Shakeable Providers
+
+Since the release of Angular version 6, The angular team provided a new feature to allow services to be tree-shakeable, meaning that your services will not be included in the final bundle unless they're being used by other services or components. This can help reduce the bundle size by removing unused code from the bundle.
+
+You can make your services tree-shakeable by using the `providedIn` attribute to define where the service should be initialized when using the `@Injectable()` decorator. Then you should remove it from the `providers` attribute of your `NgModule` declaration as well as its import statement as follows.
+
+Before:
+
+```ts
+// app.module.ts
+import { NgModule } from '@angular/core'
+import { AppRoutingModule } from './app-routing.module'
+import { AppComponent } from './app.component'
+import { environment } from '../environments/environment'
+import { MyService } from './app.service'
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    ...
+  ],
+  providers: [MyService],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+
+```ts
+// my-service.service.ts 
+import { Injectable } from '@angular/core'
+
+@Injectable()
+export class MyService { }
+```
+
+After:
+
+```ts
+// app.module.ts
+import { NgModule } from '@angular/core'
+import { AppRoutingModule } from './app-routing.module'
+import { AppComponent } from './app.component'
+import { environment } from '../environments/environment'
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    ...
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+
+```ts
+// my-service.service.ts
+import { Injectable } from '@angular/core'
+
+@Injectable({
+  providedIn: 'root'
+})
+export class MyService { }
+```
+
+If `MyService` is not injected in any component/service, then it will not be included in the bundle.
+
+**Resources**
+
+- [Angular Providers](https://angular.io/guide/providers)
 
 ### Ahead-of-Time (AoT) Compilation
 
